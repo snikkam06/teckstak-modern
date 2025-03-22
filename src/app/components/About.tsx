@@ -3,14 +3,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { WordRotate } from '@/components/magicui/word-rotate';
 
 const About = () => {
-  const universities = [
-    { name: 'Purdue University' },
-    { name: 'A&M University' },
-    { name: 'UTSA' },
-    { name: 'And more!' },
-  ];
+  const subjects = ["SAT", "Java", "Math", "Science", "and More"];
 
   return (
     <section id="about-us" className="py-16 md:py-24">
@@ -61,20 +57,11 @@ const About = () => {
             </p>
             
             <div>
-              <h4 className="text-xl font-semibold mb-4">We work with students from:</h4>
-              <div className="grid grid-cols-2 gap-4">
-                {universities.map((uni, index) => (
-                  <motion.div
-                    key={uni.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: 0.1 * index }}
-                    className="glass-panel p-4 text-center"
-                  >
-                    {uni.name}
-                  </motion.div>
-                ))}
+              <h4 className="text-xl font-semibold mb-4">We provide tutoring for:</h4>
+              <div className="glass-panel p-3 px-4 text-center inline-flex justify-center items-center transition-all duration-500 ease-in-out min-w-[150px]">
+                <div className="text-3xl md:text-4xl font-bold">
+                  <WordRotate words={subjects} />
+                </div>
               </div>
             </div>
           </motion.div>
