@@ -1,9 +1,76 @@
-"use client";
+"use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+// Form validation schema
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  subject: z.string().optional(),
+  message: z.string().min(10, {
+    message: "Message must be at least 10 characters.",
+  }),
+});
 
 const Contact = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    success?: boolean;
+    message?: string;
+  }>({});
+
+  const { 
+    register, 
+    handleSubmit, 
+    reset,
+    formState: { errors }
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: ""
+    }
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong');
+      }
+
+      reset();
+      setSubmitStatus({
+        success: true,
+        message: "Thank you! Your message has been sent successfully."
+      });
+    } catch (error) {
+      setSubmitStatus({
+        success: false,
+        message: "There was a problem sending your message. Please try again."
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section id="contact" className="py-16 md:py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-emerald-900/20 pointer-events-none"></div>
@@ -44,7 +111,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Phone</h4>
-                    <p className="text-white/70">+1 (555) 123-4567</p>
+                    <p className="text-white/70">+1 (210) 850-9493</p>
                   </div>
                 </div>
                 
@@ -56,7 +123,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Email</h4>
-                    <p className="text-white/70">info@teckstak.com</p>
+                    <p className="text-white/70">ssnikkam@gmail.com</p>
                   </div>
                 </div>
                 
@@ -69,7 +136,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Location</h4>
-                    <p className="text-white/70">123 Education St, Academic City, CA 94000</p>
+                    <p className="text-white/70">San Antonio, TX</p>
                   </div>
                 </div>
               </div>
@@ -84,57 +151,117 @@ const Contact = () => {
             className="lg:col-span-3"
           >
             <div className="glass-panel p-8">
-              <form>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                      placeholder="Your name"
-                    />
+              {submitStatus.success ? (
+                <div className="text-center py-8">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
+                    <p className="text-white/80 mb-6">
+                      Thank you for reaching out. We'll get back to you soon.
+                    </p>
+                    <button
+                      onClick={() => setSubmitStatus({})}
+                      className="px-6 py-2 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-lg text-white"
+                    >
+                      Send Another Message
+                    </button>
+                  </motion.div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-white">
+                        Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        {...register("name")}
+                        placeholder="Your name"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm">{errors.name.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-white">
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        {...register("email")}
+                        type="email"
+                        placeholder="Your email"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email.message}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">
+                      Subject
+                    </label>
                     <input
-                      type="email"
-                      id="email"
+                      {...register("subject")}
+                      placeholder="Subject"
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                      placeholder="Your email"
                     />
+                    {errors.subject && (
+                      <p className="text-red-500 text-sm">{errors.subject.message}</p>
+                    )}
                   </div>
-                </div>
-                
-                <div className="mb-6">
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">Subject</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                    placeholder="Subject"
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">Message</label>
-                  <textarea
-                    id="message"
-                    rows={5}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                    placeholder="Your message"
-                  ></textarea>
-                </div>
-                
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-emerald-500 text-white font-medium py-3 px-8 rounded-lg"
-                  type="submit"
-                >
-                  Send Message
-                </motion.button>
-              </form>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">
+                      Message <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      {...register("message")}
+                      placeholder="Your message"
+                      rows={5}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                    />
+                    {errors.message && (
+                      <p className="text-red-500 text-sm">{errors.message.message}</p>
+                    )}
+                  </div>
+                  
+                  {submitStatus.message && !submitStatus.success && (
+                    <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-white">
+                      <p>{submitStatus.message}</p>
+                    </div>
+                  )}
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    disabled={isSubmitting}
+                    type="submit"
+                    className={`w-full md:w-auto bg-gradient-to-r from-blue-500 to-emerald-500 text-white font-medium py-3 px-8 rounded-lg flex items-center justify-center ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : "Send Message"}
+                  </motion.button>
+                </form>
+              )}
             </div>
           </motion.div>
         </div>
@@ -143,4 +270,4 @@ const Contact = () => {
   );
 };
 
-export default Contact; 
+export default Contact;
