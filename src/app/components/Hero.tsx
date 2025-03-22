@@ -51,11 +51,14 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative"
+            className="relative flex justify-center items-center"
           >
-            <div className="relative flex items-center justify-center h-[400px]">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-full filter blur-3xl"></div>
-              <div className="relative z-10">
+            <div className="relative w-full h-[450px] sm:h-[500px] md:h-[550px]">
+              {/* Larger glowing background, shifted right */}
+              <div className="absolute top-1/2 left-[55%] -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[400px] md:h-[400px] bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-full filter blur-3xl"></div>
+              
+              {/* Larger globe, shifted right */}
+              <div className="absolute top-[27%] left-[75%] -translate-x-1/2 -translate-y-1/2 w-full max-w-[400px] md:max-w-[450px] aspect-square">
                 <GlobeAnimation />
               </div>
             </div>
