@@ -53,9 +53,11 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="relative"
           >
-            <div className="relative">
+            <div className="relative flex items-center justify-center h-[400px]">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-full filter blur-3xl"></div>
-              <GlobeAnimation />
+              <div className="relative z-10">
+                <GlobeAnimation />
+              </div>
             </div>
           </motion.div>
         </div>

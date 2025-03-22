@@ -3,10 +3,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { WordRotate } from '@/components/magicui/word-rotate';
+import { MorphingText } from "@/components/magicui/morphing-text";
 
 const About = () => {
-  const subjects = ["SAT", "Java", "Math", "Science", "and More"];
+  const texts = ["SAT", "Java", "Math", "Science"];
 
   return (
     <section id="about-us" className="py-16 md:py-24">
@@ -61,11 +61,9 @@ const About = () => {
             </p>
             
             <div>
-              <h4 className="text-xl font-semibold mb-4">We provide tutoring for:</h4>
-              <div className="glass-panel p-3 px-4 text-center inline-flex justify-center items-center transition-all duration-500 ease-in-out min-w-[150px]">
-                <div className="text-3xl md:text-4xl font-bold">
-                  <WordRotate words={subjects} />
-                </div>
+              <h4 className="text-xl font-semibold mb-2">We provide tutoring for:</h4>
+              <div className="text-xl md:text-2xl font-bold flex items-center">
+                <MorphingText texts={texts} />
               </div>
             </div>
           </motion.div>
