@@ -31,10 +31,14 @@ const About = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="glass-panel p-1 rounded-2xl overflow-hidden">
-              <div className="aspect-video relative bg-gradient-to-tr from-blue-600 to-emerald-600 rounded-xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-lg font-medium">
-                  Image Placeholder
-                </div>
+              <div className="aspect-video relative rounded-xl overflow-hidden">
+                <Image
+                  src="/campus.jpg"
+                  alt="Campus"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
             </div>
           </motion.div>
