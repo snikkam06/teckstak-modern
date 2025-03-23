@@ -3,14 +3,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { Meteors } from '@/components/magicui/meteors';
 
 // Dynamically import the Globe to avoid SSR issues with cobe
 const GlobeAnimation = dynamic(() => import('./GlobeAnimation'), { ssr: false });
 
 const Hero = () => {
   return (
-    <section id="home" className="min-h-screen pt-24 flex items-center">
-      <div className="section-container">
+    <section id="home" className="min-h-screen pt-24 flex items-center relative overflow-hidden">
+      <div className="absolute inset-20 overflow-hidden">
+        <Meteors 
+          number={20} 
+          minDuration={4}
+          maxDuration={8}
+          angle={215}
+          className="opacity-60"
+        />
+      </div>
+      
+      <div className="section-container relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
