@@ -14,8 +14,8 @@ const Hero = () => {
       <div className="absolute inset-20 overflow-hidden">
         <Meteors 
           number={20} 
-          minDuration={4}
-          maxDuration={8}
+          minDuration={50}
+          maxDuration={150}
           angle={215}
           className="opacity-60"
         />
